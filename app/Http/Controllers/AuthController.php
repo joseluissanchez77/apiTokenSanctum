@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginFormRequest;
+use App\Http\Requests\RegisterFormRequest;
 use App\Models\User;
+use App\Traits\RestResponse;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,10 +15,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    use RestResponse;
+    public function register(RegisterFormRequest $request)
     {
 
-        $validator = Validator::make($request->all(), [
+      /*   $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:0',
@@ -24,7 +29,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json($validator->errors());
-        }
+        } */
 
         $user = User::create([
             'name' => $request->name,
@@ -42,12 +47,12 @@ class AuthController extends Controller
     }
 
 
-    public function login(Request $request)
+    public function login(LoginFormRequest $request, AuthenticationException $exception)
     {
 
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
-                'message' => 'Unauthorizated'
+                'message' => $exception->getMessage()
             ], 401);
         }
 

@@ -30,5 +30,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('logout', [AuthController::class, 'logout']);
     Route::get('/courses', [CourseController::class, 'index']);
-
+    Route::post('/courses', [CourseController::class, 'create']);
+    Route::get('/courses/{course}', [CourseController::class, 'show']);
+    Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
+    Route::put('/courses/{course}', [CourseController::class, 'update']);
 });
